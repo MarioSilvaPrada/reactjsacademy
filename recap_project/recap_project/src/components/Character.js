@@ -14,50 +14,53 @@ const Card = styled('div')`
     transition: 0.4s;
     background-color: #FFE53B;
     background-image: linear-gradient(147deg, #FFE53B 0%, #FF2525 74%);
+    color: black;
 
     &:hover {
         cursor:pointer;
         transform: scale(1.1);
     }
+
 `;
 
-const Character = ({ searchFilter }) => (
-  <Query
-    query={CHARACTER}>
-    {({ loading, error, data }) => {
-      if (loading) return <p>Loading...</p>;
-      if (error) return <p>Error</p>;
+const Character = ({ searchFilter, pageSelected }) => {
 
-      let chars = data.characters.results;
+  let page = pageSelected;
 
-      const filterCharacters = chars.filter(char => {
-        return char.name.toLowerCase().includes(searchFilter.toLowerCase())
-      })
+  return (
+    <Query
+      query={CHARACTER} variables={{ page }}>
+      {({ loading, error, data }) => {
+        if (loading) return <p>Loading...</p>;
+        if (error) return <p>Error</p>;
 
-      return filterCharacters.map((char, i) => (
-        <Link to={`/${char.id}`}>
-          <Card>
-            <img alt='' src={char.image} />
-            <div>
-              <h2>{char.name}</h2>
-            </div>
-          </Card>
-        </Link>
-      ));
-    }}
-  </Query>
-)
+        let chars = data.characters.results;
+
+        const filterCharacters = chars.filter(char => {
+          return char.name.toLowerCase().includes(searchFilter.toLowerCase())
+        })
+
+        return filterCharacters.map((char, i) => (
+          <Link to={`/${char.id}`} style={{ textDecoration: 'none' }}>
+            <Card>
+              <img alt='' src={char.image} />
+              <div>
+                <h2>{char.name}</h2>
+              </div>
+            </Card>
+          </Link>
+        ));
+      }}
+    </Query>
+  )
+}
 
 const CHARACTER = gql`
-query something { 
-  characters{
+query($page:Int) { 
+  characters(page:$page){
     results{
-      name
-    },
-    results{
-      image
-    },
-    results{
+      name,
+      image,
       id
     }
   }

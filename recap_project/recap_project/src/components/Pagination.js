@@ -12,6 +12,8 @@ const NumberPage = styled.a`
     padding: 10px;
     margin: 10px 0;
 
+    ${props => props.selected ? `color: red; font-weight: bold;` : `color: black`};
+
     &:hover {
 
         cursor: pointer;
@@ -19,19 +21,24 @@ const NumberPage = styled.a`
     }
 `
 
-const pageNumbers = [];
 
-for (let i = 1; i <= 25; i++) {
-    pageNumbers.push(<NumberPage key={i}>{i}</NumberPage>);
+
+const Pages = ({ pageChange, nextPage, previousPage, pageSelected }) => {
+    const pageNumbers = [];
+
+    for (let i = 1; i <= 25; i++) {
+        i === pageSelected 
+            ? pageNumbers.push(<NumberPage selected onClick={() => pageChange(i)} key={i}>{i}</NumberPage>)
+            : pageNumbers.push(<NumberPage onClick={() => pageChange(i)} key={i}>{i}</NumberPage>)
+    }
+    return (
+        <Pagination>
+            <NumberPage onClick={() => previousPage()} >previous</NumberPage>
+            {pageNumbers}
+            <NumberPage onClick={() => nextPage()} >next</NumberPage>
+
+        </Pagination>
+    )
 }
-
-const Pages = () => (
-    <Pagination>
-        <NumberPage>previous</NumberPage>
-        {pageNumbers}
-        <NumberPage>next</NumberPage>
-
-    </Pagination>
-)
 
 export default Pages;

@@ -6,17 +6,17 @@ import CharacterList from './components/CharacterList';
 import SearchFilter from './components/SearchFiter';
 import Pagination from './components/Pagination';
 
-import Characters from './components/Character'
+import Character from './components/Character'
 
 class App extends Component {
 
   constructor() {
     super()
     this.state = {
-      characters: [],
+      // characters: [],
       loading: true,
       searchFilter: '',
-      page: ''
+      page: 1
     }
   }
 
@@ -35,15 +35,34 @@ class App extends Component {
     this.setState({page: num}, ()=> console.log(this.state.page))
   }
 
+  nextPage = () => {
+    let currentPage = this.state.page;
+    this.setState({ page:currentPage + 1 })
+
+  }
+
+  previousPage = () => {
+    let currentPage = this.state.page;
+    this.setState({ page:currentPage - 1 })
+  }
+
   render() {
     
     return (
       <Container>
       <h1>Rick and Morty API</h1>
         <SearchFilter onChange={this.searchChange} />
-        <Pagination pageChange={this.pageChange}/>
+        <Pagination 
+              pageChange={this.pageChange}
+              nextPage={this.nextPage}
+              previousPage={this.previousPage}
+              pageSelected={this.state.page}
+              />
         <CharacterList>
-          <Characters searchFilter={this.state.searchFilter}/>
+          <Character 
+              searchFilter={this.state.searchFilter} 
+              pageSelected={this.state.page}
+               />
         </CharacterList>
       </Container>
     )
